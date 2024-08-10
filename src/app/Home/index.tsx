@@ -1,23 +1,22 @@
-import { View, Text, Button } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { styles } from "./styles";
-import { useState } from "react";
+import React from 'react';
+import { View, Text, Button } from 'react-native';
+import { signOut } from 'firebase/auth';
+import { useNavigation } from '@react-navigation/native';
+import { auth } from '../../config/firebase';
+import { styles } from './styles';
 
-function Home() {
-  const [nome, setNome] = useState("Felipe");
-  const [canal, setCanal] = useState("TecEdu4All");
+export default function Home() {
   const navigation = useNavigation();
 
-  function handlePress() {
-    navigation.navigate("Geolocation", { nome, canal});
-  }
+  const handleLogout = async () => {
+    await signOut(auth);
+    navigation.navigate('Login');
+  };
 
   return (
     <View style={styles.container}>
       <Text>Página Home</Text>
-      <Button title="Navegar para a tela Geolocation" onPress={handlePress} />
+      <Button title="Logout" onPress={handleLogout} />
     </View>
   );
 }
-
-export default Home;
