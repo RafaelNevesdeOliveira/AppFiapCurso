@@ -1,12 +1,15 @@
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from './src/app/Home';
 import Geolocation from './src/app/Geolocation';
 import Login from './src/app/Login';
+import Header from './src/components/Header';
+import Footer from './src/components/Footer';
+
+const StackNavigation = createNativeStackNavigator();
 
 export default function App() {
-  const StackNavigation = createNativeStackNavigator();
-
   return (
     <NavigationContainer>
       <StackNavigation.Navigator initialRouteName="Login">
@@ -18,17 +21,17 @@ export default function App() {
         <StackNavigation.Screen 
           name="Home" 
           component={Home} 
-          options={{ 
-            headerShown: true, 
-            title: "Tela Inicial", 
-            headerStyle: { backgroundColor: '#000' }, 
-            headerTintColor: '#FFF' 
-          }}
+          options={({ navigation }) => ({
+            footer: () => <Footer navigation={navigation} />,
+          })}
         />
         <StackNavigation.Screen 
           name="Geolocation" 
           component={Geolocation} 
-          options={{ headerShown: true }}
+          options={({ navigation }) => ({
+            header: () => <Header title="Geolocation" onMenuPress={() => {}} canGoBack={navigation.canGoBack()} />,
+            footer: () => <Footer navigation={navigation} />,
+          })}
         />
       </StackNavigation.Navigator>
     </NavigationContainer>

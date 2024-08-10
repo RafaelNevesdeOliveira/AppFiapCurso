@@ -13,7 +13,11 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.rafaelneves1991.MyNewApp"
+      "bundleIdentifier": "com.rafaelneves1991.MyNewApp",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "We need access to your location to show your position on the map.",
+        "NSLocationAlwaysUsageDescription": "We need access to your location to provide location-based services even when the app is in the background."
+      }
     },
     "android": {
       "adaptiveIcon": {

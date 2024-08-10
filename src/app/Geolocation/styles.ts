@@ -1,11 +1,20 @@
+
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-  container:{
-    flex:1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#fff",
-    paddingTop: "8%"
-  }
-})
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  map: {
+    width: '70%',
+    height: '70%',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    padding: 20,
+  },
+});

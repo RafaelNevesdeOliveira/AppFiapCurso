@@ -13,7 +13,6 @@ export default function Login() {
 
   const handleLogin = async () => {
     try {
-      console.log("API Key:", process.env.EXPO_PUBLIC_API_KEY);
       await signInWithEmailAndPassword(auth, email, password);
       navigation.navigate('Home');
     } catch (error: any) {
