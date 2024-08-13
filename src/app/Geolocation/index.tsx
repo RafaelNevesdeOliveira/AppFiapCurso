@@ -64,7 +64,7 @@ export default function LocationScreen() {
       <View style={styles.buttonContainer}>
         <Button title="Pegar Localização Atual" onPress={handleGetCurrentLocation} />
       </View>
-      <Footer />  {/* Não passa navigation manualmente */}
+      <Footer />
     </View>
   );
 }

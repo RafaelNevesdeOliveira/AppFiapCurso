@@ -3,6 +3,7 @@ import { View, Text, TextInput, Button, Alert } from 'react-native';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { registerUserAsync } from '../features/users/userSlice';
 import { styles } from './styles';
+import Footer from '../../components/Footer';
 
 export default function RegisterUser() {
   const [name, setName] = useState('');
@@ -39,6 +40,7 @@ export default function RegisterUser() {
       <Button title="Registrar" onPress={handleRegister} />
       {loading && <Text>Registrando...</Text>}
       {error && <Text>{error}</Text>}
+      <Footer />
     </View>
   );
 }
