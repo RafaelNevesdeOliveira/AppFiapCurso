@@ -4,8 +4,9 @@ import { useNavigation } from '@react-navigation/native';
 import { signOut } from 'firebase/auth';
 import { auth } from '../../config/firebase';
 import { Container, FooterButton, FooterText } from './styles';
+import { Text } from 'react-native'; // Assegure-se que isso seja importado se precisar usar diretamente
 
-export default function Footer(){
+export default function Footer() {
   const navigation = useNavigation();
 
   const handleLogout = async () => {
@@ -21,19 +22,27 @@ export default function Footer(){
     navigation.navigate('Geolocation');
   };
 
+  const handleNavigateToRegisterUser = () => {
+    navigation.navigate('RegisterUser');
+  };
+
   return (
     <Container>
       <FooterButton onPress={handleNavigateToHome}>
         <Ionicons name="home" size={24} color="white" />
-        <FooterText>Home</FooterText>
+        <FooterText><Text>Home</Text></FooterText>
       </FooterButton>
       <FooterButton onPress={handleNavigateToGeolocation}>
         <Ionicons name="navigate" size={24} color="white" />
-        <FooterText>Geolocation</FooterText>
+        <FooterText><Text>Geolocation</Text></FooterText>
+      </FooterButton>
+      <FooterButton onPress={handleNavigateToRegisterUser}>
+        <Ionicons name="navigate" size={24} color="white" />
+        <FooterText><Text>RegisterUser</Text></FooterText>
       </FooterButton>
       <FooterButton onPress={handleLogout}>
         <Ionicons name="log-out" size={24} color="white" />
-        <FooterText>Logout</FooterText>
+        <FooterText><Text>Logout</Text></FooterText>
       </FooterButton>
     </Container>
   );

@@ -6,6 +6,7 @@ import { auth } from '../../config/firebase';
 import { fetchCars, addCar, updateCar, deleteCar } from '../service/carService';
 import { Car } from '../../../assets/data/carData';
 import { styles } from './styles';
+import Footer from '../../components/Footer';
 
 export default function Home() {
   const [data, setData] = useState<Car[]>([]);
@@ -24,68 +25,48 @@ export default function Home() {
     loadCars();
   }, []);
 
-    // Função para realizar o logout e redirecionar para a tela de login
-    const handleLogout = async () => {
-      await signOut(auth); // Realiza o logout usando Firebase Authentication
-      navigation.navigate('Login'); // Redireciona para a tela de login
-    };
-  
-
-  // Função para navegar para a tela de geolocalização
-  const handleGoToGeolocation = () => {
-    navigation.navigate('Geolocation'); // Navega para a tela de Geolocalização
-  };
-
-  // Função para iniciar o processo de adição de um novo carro
   const handleAddCar = () => {
-    setIsAdding(true); // Ativa o modo de adição de carro
-    setCurrentCar({}); // Limpa o estado do carro atual
+    setIsAdding(true);
+    setCurrentCar({});
   };
 
-  // Função para salvar o carro (seja adicionando um novo ou atualizando um existente)
   const handleSaveCar = async () => {
     if (isAdding) {
-      // Se estivermos adicionando um novo carro
       const newCar: Partial<Car> = {
-        name: currentCar.name!, // Obtém o nome do carro do estado
-        year: currentCar.year!, // Obtém o ano do carro do estado
-        image: currentCar.image!, // Obtém a URL da imagem do estado
+        name: currentCar.name!,
+        year: currentCar.year!,
+        image: currentCar.image!,
       };
-      await addCar(newCar); // Adiciona o novo carro no Firestore
+      await addCar(newCar);
     } else if (isUpdating && carIdToUpdate) {
-      // Se estivermos atualizando um carro existente
       const updatedCar: Partial<Car> = {
         name: currentCar.name,
         year: currentCar.year,
         image: currentCar.image,
       };
-      await updateCar(carIdToUpdate, updatedCar); // Atualiza o carro existente no Firestore
+      await updateCar(carIdToUpdate, updatedCar);
     }
-    // Reseta os estados e recarrega a lista de carros
     setIsAdding(false);
     setIsUpdating(false);
     setCurrentCar({});
     setCarIdToUpdate(null);
-    setData(await fetchCars()); // Recarrega os dados dos carros
+    setData(await fetchCars());
   };
 
-  // Função para preparar o formulário para a atualização de um carro existente
   const handleUpdateCar = (id: string) => {
-    const carToEdit = data.find(car => car.id === id); // Encontra o carro a ser editado pelo ID
+    const carToEdit = data.find(car => car.id === id);
     if (carToEdit) {
-      setCurrentCar(carToEdit); // Preenche o formulário com os dados do carro a ser editado
-      setCarIdToUpdate(id); // Armazena o ID do carro a ser atualizado
-      setIsUpdating(true); // Ativa o modo de atualização
+      setCurrentCar(carToEdit);
+      setCarIdToUpdate(id);
+      setIsUpdating(true);
     }
   };
 
-  // Função para deletar um carro
   const handleDeleteCar = async (id: string) => {
-    await deleteCar(id); // Deleta o carro no Firestore pelo ID
-    setData(await fetchCars()); // Recarrega os dados dos carros
+    await deleteCar(id);
+    setData(await fetchCars());
   };
-  
-    // Função para renderizar cada item na FlatList (carro)
+
   const renderItem: ListRenderItem<Car> = ({ item }) => (
     <View style={styles.itemContainer}>
       <Image
@@ -102,51 +83,49 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.topButtonsContainer}>
-        <Button title="Geolocation" onPress={handleGoToGeolocation} />
-        <Button title="Logout" onPress={handleLogout} />
+      <View style={styles.wrapp}>
+        {isAdding || isUpdating ? (
+          <View style={styles.formContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Name"
+              value={currentCar.name || ''}
+              onChangeText={(text) => setCurrentCar({ ...currentCar, name: text })}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Year"
+              value={currentCar.year ? String(currentCar.year) : ''}
+              keyboardType="numeric"
+              onChangeText={(text) => setCurrentCar({ ...currentCar, year: parseInt(text) })}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Image URL"
+              value={currentCar.image || ''}
+              onChangeText={(text) => setCurrentCar({ ...currentCar, image: text })}
+            />
+            <Button title="Save" onPress={handleSaveCar} />
+            <Button title="Cancel" onPress={() => { setIsAdding(false); setIsUpdating(false); setCurrentCar({}); }} />
+          </View>
+        ) : (
+          <>
+            <Button title="Add Car" onPress={handleAddCar} />
+            <Text style={styles.sectionTitle}>Carros</Text>
+            <FlatList
+              data={data}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={styles.list}
+              showsVerticalScrollIndicator={false}
+              numColumns={1}
+              onEndReachedThreshold={0.5}
+              ListFooterComponent={loading ? <Text>Loading...</Text> : null}
+            />
+          </>
+        )}
       </View>
-
-      {isAdding || isUpdating ? (
-        <View style={styles.formContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Name"
-            value={currentCar.name || ''}
-            onChangeText={(text) => setCurrentCar({ ...currentCar, name: text })}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Year"
-            value={currentCar.year ? String(currentCar.year) : ''}
-            keyboardType="numeric"
-            onChangeText={(text) => setCurrentCar({ ...currentCar, year: parseInt(text) })}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Image URL"
-            value={currentCar.image || ''}
-            onChangeText={(text) => setCurrentCar({ ...currentCar, image: text })}
-          />
-          <Button title="Save" onPress={handleSaveCar} />
-          <Button title="Cancel" onPress={() => { setIsAdding(false); setIsUpdating(false); setCurrentCar({}); }} />
-        </View>
-      ) : (
-        <>
-          <Button title="Add Car" onPress={handleAddCar} />
-          <Text style={styles.sectionTitle}>Carros</Text>
-          <FlatList
-            data={data}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={styles.list}
-            showsVerticalScrollIndicator={false}
-            numColumns={1}
-            onEndReachedThreshold={0.5}
-            ListFooterComponent={loading ? <Text>Loading...</Text> : null}
-          />
-        </>
-      )}
+      <Footer />
     </View>
   );
 }

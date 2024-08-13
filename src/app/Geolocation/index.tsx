@@ -5,7 +5,7 @@ import MapView, { Marker } from 'react-native-maps';
 import { styles } from './styles';
 import Footer from '../../components/Footer';
 
-const GOOGLE_API_KEY = 'AIzaSyBZRDxn0MwNMsSEqShxtve3CQyUnVnn17M'
+const GOOGLE_API_KEY = 'your_google_api_key';
 
 export default function LocationScreen() {
   const [location, setLocation] = useState({
@@ -64,7 +64,7 @@ export default function LocationScreen() {
       <View style={styles.buttonContainer}>
         <Button title="Pegar Localização Atual" onPress={handleGetCurrentLocation} />
       </View>
-      <Footer navigation={""}/>
+      <Footer />  {/* Não passa navigation manualmente */}
     </View>
   );
 }
