@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { View, Button } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import MapView, { Marker } from 'react-native-maps';
-import { styles} from './styles'
+import { styles } from './styles';
 import Footer from '../../components/Footer';
 
-const GOOGLE_API_KEY = "AIzaSyCVggpZf_fNjqbQMVIF9rNqsPjGbzEQK48";
+const GOOGLE_API_KEY = 'AIzaSyBZRDxn0MwNMsSEqShxtve3CQyUnVnn17M'
 
 export default function LocationScreen() {
   const [location, setLocation] = useState({
@@ -16,24 +16,36 @@ export default function LocationScreen() {
   });
 
   const handleGetCurrentLocation = () => {
-    console.log(process.env.EXPO_PUBLIC_API_KEY);
-
     Geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
         const { latitude, longitude } = position.coords;
+        
         setLocation((prev) => ({
           ...prev,
           latitude,
           longitude,
         }));
+
+        try {
+          const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_API_KEY}`);
+          const data = await response.json();
+
+          if (data.results.length > 0) {
+            const address = data.results[0].formatted_address;
+            console.log("Endereço atual:", address);
+          } else {
+            console.log("Nenhum resultado encontrado");
+          }
+        } catch (error) {
+          console.error("Erro ao obter o endereço da API do Google", error);
+        }
       },
       (error) => {
-        console.error("Error getting location", error);
+        console.error("Erro ao obter localização", error);
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
     );
   };
-
 
   return (
     <View style={styles.container}>
@@ -56,5 +68,3 @@ export default function LocationScreen() {
     </View>
   );
 }
-
-
